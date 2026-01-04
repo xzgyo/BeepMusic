@@ -1,3 +1,14 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+File: main.py
+Author: xzgyo
+Email: xzgyo@outlook.com
+Created: 2026-01-03
+Last Modified: N/A
+Version: 0.1.0
+Description: main.py
+"""
 import sys
 import os
 import csv
@@ -5,25 +16,20 @@ import time
 import platform
 import logging
 
+from src.config import log_fmt
+from src.note import note_to_frequency
+
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 handler = logging.StreamHandler()
 handler.setLevel(logging.DEBUG)
-formatter = logging.Formatter('%(asctime)s [%(name)s] [%(levelname)s] %(message)s')
+formatter = logging.Formatter(log_fmt)
 handler.setFormatter(formatter)
 logger.addHandler(handler)
 
-
-N = {
-    '0': 0,
-    'CL3': 131, 'CL4': 147, 'CL5': 165, 'CL6': 175, 'CL7': 196,
-    'C3': 262, 'D3': 294, 'E3': 330, 'F3': 349, 'G3': 392, 'A3': 440, 'B3': 494,
-    'C4': 523, 'D4': 587, 'E4': 659, 'F4': 698, 'G4': 784, 'A4': 880, 'A4#': 932, 'B4': 988,
-    'C5': 1047, 'D5': 1175, 'E5': 1319, 'F5': 1397, 'G5': 1568, 'A5': 1760, 'B5': 1976
-}
 speed = 240
 
-def play_music(file_path):
+def play_music(file_path: str, octave_shift:int=0):
     if platform.system() != "Linux":
         logger.error("仅支持Linux")
         sys.exit(1)
@@ -46,7 +52,7 @@ def play_music(file_path):
                 if not row: continue
                 note = row[0]
                 beat = float(row[1])
-                freq = N[note]
+                freq = note_to_frequency(note, octave_shift)
                 duration = beat * speed
                 if freq > 0:
                     cmd = f'beep -f {freq} -l {duration}'
@@ -62,8 +68,12 @@ def play_music(file_path):
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
-        logger.error("未指定文件")
+        logger.error(f"参数错误，使用python3 {__file__} 文件名 ")
         sys.exit(1)
     else:
         csv_path = sys.argv[1]
-        play_music(csv_path)
+        try:
+            octave_shift = int(sys.argv[2])
+        except:
+            octave_shift = 0
+        play_music(csv_path, octave_shift)
