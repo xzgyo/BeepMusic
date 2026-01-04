@@ -27,9 +27,7 @@ formatter = logging.Formatter(log_fmt)
 handler.setFormatter(formatter)
 logger.addHandler(handler)
 
-speed = 240
-
-def play_music(file_path: str, octave_shift:int=0):
+def play_music(file_path: str, speed:int=240, octave_shift:int=0):
     if platform.system() != "Linux":
         logger.error("仅支持Linux")
         sys.exit(1)
@@ -67,13 +65,17 @@ def play_music(file_path: str, octave_shift:int=0):
         logger.error("\n已停止")
 
 if __name__ == "__main__":
-    if len(sys.argv) < 2:
-        logger.error(f"参数错误，使用python3 {__file__} 文件名 ")
+    if len(sys.argv) < 3:
+        logger.error(f"参数错误，使用python3 {__file__} 文件名 速度 options")
         sys.exit(1)
     else:
         csv_path = sys.argv[1]
         try:
-            octave_shift = int(sys.argv[2])
+            speed = int(sys.argv[2])
+        except:
+            speed = 0
+        try:
+            octave_shift = int(sys.argv[3])
         except:
             octave_shift = 0
-        play_music(csv_path, octave_shift)
+        play_music(csv_path, speed, octave_shift)
