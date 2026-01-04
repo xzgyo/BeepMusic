@@ -11,9 +11,9 @@ sudo apt install beep
 ```bash
 sudo modprobe pcspkr
 ```
-最后以`music.csv`中的旋律演奏  
+最后以`music.csv`中的旋律演奏（以升八度的方式）  
 ```bash
-python3 main.py music.csv
+python3 main.py music.csv 3
 ```
 > [!NOTE]
 > 关于`music.csv`  

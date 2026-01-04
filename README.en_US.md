@@ -13,7 +13,7 @@ sudo modprobe pcspkr
 ```
 Finally, the melody from `music.csv` will be played.  
 ```bash
-python3 main.py music.csv
+python3 main.py music.csv 3
 ```
 > [!NOTE]
 > About `music.csv`  
