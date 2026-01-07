@@ -11,12 +11,15 @@ sudo apt install beep
 ```bash
 sudo modprobe pcspkr
 ```
-最后以`music.csv`中的旋律演奏（以速度180，升2个八度的方式）  
+最后播放《Unwelcome School》
 ```bash
-python3 main.py music.csv -s 180 -o 2
+python3 main.py "music/Unwelcome School - Mitsukiyo.mid" -m midi -t 2 -s 180
+```
+或者使用music.csv中的
+```bash
+python3 main.py music.csv -s 180
 ```
 > [!NOTE]
-> 关于`music.csv`  
-> 作者送了你一个千本樱的乐谱，~~多好啊~~  
+> 所有乐谱都在music目录下 
 
 
