@@ -13,7 +13,15 @@ import sys
 import math
 import logging
 
-from .config import log_fmt
+from .config import *
+
+logger = logging.getLogger(__name__)
+logger.setLevel(log_lev)
+handler = logging.StreamHandler()
+handler.setLevel(log_lev)
+formatter = logging.Formatter(log_fmt)
+handler.setFormatter(formatter)
+logger.addHandler(handler)
 
 def note_to_frequency(note_str: str, octave_shift:int=0):
     if note_str == "0": #空拍
@@ -47,18 +55,9 @@ def note_to_frequency(note_str: str, octave_shift:int=0):
     frequency = 440 * (2 ** (n / 12))
     return round(frequency, 2) # 保留两位小鼠
 
-def test(logger:logging.Logger, test_notes=["C4", "D4", "A3", "A4#", "B4b", "0"]):
+def test(test_notes=["C4", "D4", "A3", "A4#", "B4b", "0"]):
     for note in test_notes:
         logger.info(f"Note={note:<3} Frequency: {note_to_frequency(note)} Hz")
 
 if __name__ == '__main__':
-    # logger
-    logger = logging.getLogger(__name__)
-    logger.setLevel(logging.DEBUG)
-    handler = logging.StreamHandler()
-    handler.setLevel(logging.DEBUG)
-    formatter = logging.Formatter(log_fmt)
-    handler.setFormatter(formatter)
-    logger.addHandler(handler)
-    # start test
-    test(logger)
+    test()
