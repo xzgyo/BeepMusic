@@ -11,6 +11,13 @@ sudo apt install beep
 ```bash
 sudo modprobe pcspkr
 ```
+初始化venv并安装依赖
+```bash
+python -m venv .venv
+. .venv/bin/activate
+pip3 install mido
+pip3 install pandas
+```
 最后播放《Unwelcome School》
 ```bash
 python3 main.py "music/Unwelcome School - Mitsukiyo.mid" -m midi -t 2 -s 180
