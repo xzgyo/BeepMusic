@@ -6,7 +6,7 @@
       "type": "debugpy",
       "request": "launch",
       "program": "main.py",
-      "args": ["/home/zhang/Documents/Project/BeepMusic/music/Bad-Apple(手动优化).mid", "-m", "midi", "-t", "1", "-s", "180"]
+      "args": ["/home/zhang/Documents/Project/BeepMusic/music/Bad-Apple(手动优化).mid", "-m", "midi", "-t", "1", "-s", "148"]
     }
   ]
 }
