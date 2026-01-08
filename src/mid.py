@@ -52,7 +52,7 @@ def play_from_midi(file_path: str, track_index: int, bpm: int=120, octave_shift:
         duration = beats * ms_per_beat
         if freq > 0:
             cmd = f'beep -f {freq} -l {duration}'
-            logger.info(f"B={beats:.2f} F={freq:.2f} D={duration:.2f}")
+            logger.info(f"B={beats:.4f} F={freq:.2f} D={duration:.2f}")
             res = os.system(cmd)
             if res != 0:
                 logger.error(f"Error with code {res} at running command `{cmd}`")
