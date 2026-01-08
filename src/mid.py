@@ -76,11 +76,42 @@ def parse_midi_to_notes(mid: mido.MidiFile, track_index: int, octave_shift:int=0
     ticks_per_beat = mid.ticks_per_beat
     results = []
     active_notes = {}
-    last_event_end_tick = 0
+    #last_event_end_tick = 0
     current_tick = 0
+    last_change_tick = 0
+    def get_weighted_freq(notes_dict):
+        """两个音同时响时根据音量加权得出平均数"""
+        if not notes_dict:
+            return 0
+        total_weighted_f = 0
+        total_velocity = 0
+        for n, v in notes_dict.items():
+            f = note_number_to_frequency(n, octave_shift)
+            total_weighted_f += f * v
+            total_velocity += v
+        return total_weighted_f / total_velocity
     for msg in track:
+        delta_ticks = msg.time
+        current_tick += delta_ticks
         current_tick += msg.time
+        # 只要时间有流逝，就记录上一个状态持续的片段
+        if delta_ticks > 0:
+            duration_beats = delta_ticks / ticks_per_beat
+            current_freq = get_weighted_freq(active_notes)
+            freq_str = f"{current_freq:.2f}" if current_freq > 0 else "0"
+            # 合并相同的连续音符
+            if results and results[-1]['freq'] == freq_str:
+                results[-1]['beats'] += duration_beats
+            else:
+                results.append({'freq': freq_str, 'beats': duration_beats})
+            last_change_tick = current_tick
+        # 更新当前活跃音符池
         if msg.type == 'note_on' and msg.velocity > 0:
+            active_notes[msg.note] = msg.velocity
+        elif msg.type == 'note_off' or (msg.type == 'note_on' and msg.velocity == 0):
+            if msg.note in active_notes:
+                active_notes.pop(msg.note)
+        """ if msg.type == 'note_on' and msg.velocity > 0:
             if current_tick > last_event_end_tick:
                 results.append({'freq': '0', 'beats': (current_tick - last_event_end_tick) / ticks_per_beat})
             active_notes[msg.note] = current_tick
@@ -89,7 +120,7 @@ def parse_midi_to_notes(mid: mido.MidiFile, track_index: int, octave_shift:int=0
                 start_tick = active_notes.pop(msg.note)
                 duration_beats = (current_tick - start_tick) / ticks_per_beat
                 results.append({'freq': note_number_to_frequency(msg.note, octave_shift), 'beats': duration_beats})
-                last_event_end_tick = max(last_event_end_tick, current_tick)
+                last_event_end_tick = max(last_event_end_tick, current_tick) """
     logger.info("Convert midi file to list[] success")
     return results
 

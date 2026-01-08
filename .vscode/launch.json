@@ -1,0 +1,12 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Python Debug",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "main.py",
+      "args": ["/home/zhang/Documents/Project/BeepMusic/music/Bad-Apple(手动优化).mid", "-m", "midi", "-t", "2", "-s", "180"]
+    }
+  ]
+}
