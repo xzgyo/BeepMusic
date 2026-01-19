@@ -26,7 +26,7 @@ formatter = logging.Formatter(log_fmt)
 handler.setFormatter(formatter)
 logger.addHandler(handler)
 
-def play_from_csv(file_path: str, bpm: int=240, octave_shift: int=0):
+def play_from_csv(file_path: str, bpm: int=240, octave_shift: int=0, system: str="Linux"):
     """
     play_from_csv 的 Docstring
     
@@ -36,6 +36,8 @@ def play_from_csv(file_path: str, bpm: int=240, octave_shift: int=0):
     :type speed: int
     :param octave_shift: 八度调整
     :type octave_shift: int
+    :param system: 系统类型
+    :type system: str
     """
     if not os.path.exists(file_path):
         logger.error(f"文件不存在: {file_path}")
@@ -51,7 +53,13 @@ def play_from_csv(file_path: str, bpm: int=240, octave_shift: int=0):
             freq = note_to_frequency(note, octave_shift)
             duration = beats * ms_per_beat
             if freq > 0:
-                cmd = f'beep -f {freq} -l {duration}'
+                if system == "Linux":
+                    cmd = f'beep {freq} {duration}'
+                elif system == "Windows":
+                    cmd = f'powershell -c "[console]::beep({freq},{duration})"'
+                else:
+                    logger.error(f"Unknown system: {system}")
+                    sys.exit(1)
                 logger.info(f"N={note} B={beats} F={freq} D={duration}")
                 res = os.system(cmd)
                 if res != 0:

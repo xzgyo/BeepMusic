@@ -27,7 +27,7 @@ logger.addHandler(handler)
 
 __all__ = ["play_from_midi", "list_all_track"]
 
-def play_from_midi(file_path: str, track_index: int, bpm: int=120, octave_shift: int=0):
+def play_from_midi(file_path: str, track_index: int, bpm: int=120, octave_shift: int=0, system: str="Linux"):
     """
     play_from_midi 的 Docstring
     
@@ -39,6 +39,8 @@ def play_from_midi(file_path: str, track_index: int, bpm: int=120, octave_shift:
     :type bpm: int
     :param octave_shift: 八度调整
     :type octave_shift: int
+    :param system: 系统类型
+    :type system: str
     """
     mid = mido.MidiFile(file_path)
     logger.info(f"Playing midi file: {file_path}")
@@ -51,7 +53,13 @@ def play_from_midi(file_path: str, track_index: int, bpm: int=120, octave_shift:
         beats = item['beats']
         duration = beats * ms_per_beat
         if freq > 0:
-            cmd = f'beep -f {freq} -l {duration}'
+            if system == "Linux":
+                cmd = f'beep {freq} {duration}'
+            elif system == "Windows":
+                cmd = f'powershell -c "[console]::beep({freq},{duration})"'
+            else:
+                logger.error(f"Unknown system: {system}")
+                sys.exit(1)
             logger.info(f"B={beats:.4f} F={freq:.2f} D={duration:.2f}")
             res = os.system(cmd)
             if res != 0:
